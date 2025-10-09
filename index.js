@@ -54,7 +54,7 @@ var glob = new chilkat.Global();
 
 function crear_folder_emisor_enupload(vfolder) {
     const dir = './uploads/'+vfolder;
-//    res.send('prubando la api crear_folder_emisor_enupload ');
+    res.send('prubando la api crear_folder_emisor_enupload ');
 
     if (!fs.existsSync(dir)){
         fs.mkdirSync(dir);
