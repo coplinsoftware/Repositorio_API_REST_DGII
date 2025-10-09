@@ -42,6 +42,8 @@ const xmldom = require('xmldom');
 // import { DOMParser, XMLSerializer  } from 'xmldom'; 
 const xml2js = require('xml2js');
 
+
+
 //import * as xml2js from 'xml2js'
 
 v_Version = process.env.VERSION;
@@ -61,8 +63,7 @@ function crear_folder_emisor_enupload(vfolder) {
     }
 /*
 */
-const fs = require('fs');
-const path = require('path');
+/*
 const folderName = 'mySyncFolder';
 const folderPath = path.join(__dirname, folderName);
 try {
@@ -71,7 +72,7 @@ try {
 } catch (err) {
   console.error('Error creating folder:', err);
 }
-
+*/
 /*
 function crear_folder_emisor_enviados(vfolder) {
     const v3_dir = './enviados/'+vfolder;
