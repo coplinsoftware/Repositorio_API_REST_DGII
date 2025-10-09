@@ -52,6 +52,40 @@ var glob = new chilkat.Global();
         console.log(glob.LastErrorText);
     }
 
+function crear_folder_emisor_enupload(vfolder) {
+    const dir = './uploads/'+vfolder;
+//    res.send('prubando la api crear_folder_emisor_enupload ');
+
+    if (!fs.existsSync(dir)){
+        fs.mkdirSync(dir);
+    }
+/*
+const fs = require('fs');
+const path = require('path');
+const folderName = 'mySyncFolder';
+const folderPath = path.join(__dirname, folderName);
+try {
+  fs.mkdirSync(folderPath, { recursive: true });
+  console.log(`Folder "${folderName}" created successfully at ${folderPath}`);
+} catch (err) {
+  console.error('Error creating folder:', err);
+*/
+}
+
+function crear_folder_emisor_enviados(vfolder) {
+    const dir = './enviados/'+vfolder;
+    if (!fs.existsSync(dir)){
+        fs.mkdirSync(dir);
+    }
+}
+
+function crear_folder_emisor_enviados(vfolder) {
+    const dir = './enviados/'+vfolder;
+    if (!fs.existsSync(dir)){
+        fs.mkdirSync(dir);
+    }
+}
+
 
 const vfolder_cliente = '';
 
@@ -104,8 +138,7 @@ app.post('/fe/recepcion/api/ecf',upload.single('archivo') ,(req, res) => {
     const parser = new xmldom.DOMParser();
     const xmlDoc = parser.parseFromString(xmlString, "text/xml");
 // Trabaja con xmlDoc para obtener tus datos [5]
-
-  const doc = parser.parseFromString(xmlString, "text/xml"); // Parsea la cadena XML
+    const doc = parser.parseFromString(xmlString, "text/xml"); // Parsea la cadena XML
   // Ahora 'doc' es un objeto de documento similar al que tendrías en un navegador
   // Puedes acceder a los nodos y elementos de forma similar a la API DOM
 
@@ -292,36 +325,3 @@ function uploadFile(req, res) {
     });
 }
 
-function crear_folder_emisor_enupload(vfolder) {
-    const dir = './uploads/'+vfolder;
-    res.send('prubando la api crear_folder_emisor_enupload ');
-
-    if (!fs.existsSync(dir)){
-        fs.mkdirSync(dir);
-    }
-/*
-const fs = require('fs');
-const path = require('path');
-const folderName = 'mySyncFolder';
-const folderPath = path.join(__dirname, folderName);
-try {
-  fs.mkdirSync(folderPath, { recursive: true });
-  console.log(`Folder "${folderName}" created successfully at ${folderPath}`);
-} catch (err) {
-  console.error('Error creating folder:', err);
-*/
-}
-
-function crear_folder_emisor_enviados(vfolder) {
-    const dir = './enviados/'+vfolder;
-    if (!fs.existsSync(dir)){
-        fs.mkdirSync(dir);
-    }
-}
-
-function crear_folder_emisor_enviados(vfolder) {
-    const dir = './enviados/'+vfolder;
-    if (!fs.existsSync(dir)){
-        fs.mkdirSync(dir);
-    }
-}
