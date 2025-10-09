@@ -80,7 +80,9 @@ const storage = multer.diskStorage({
 */
 
 const app = express();
-const port = process.env.PUERTO;
+
+//const port = process.env.PUERTO;
+const port= process.env.port || 3000;
 app.get('/fe/recepcion/api/ecp', (req, res) => {
     res.send('Entro a Servidor /fe/recepcion/api/ecp, Version de Node.js: '+process.version);
 
@@ -93,6 +95,8 @@ app.use(morgan('dev'))
 
 app.post('/fe/recepcion/api/ecf',upload.single('archivo') ,(req, res) => {
 //    return res.status(500).send('prubando la api');
+    res.send('Prueba de proceso: '+process.version);
+
     console.log('Ver Conole Log');
     console.log(req.file);
     const xmlString = fs.readFileSync(req.file.path, 'utf-8');
