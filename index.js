@@ -18,9 +18,8 @@ if (os.platform() == 'win32') {
     } else {
         var chilkat = require('@chilkat/ck-node23-linux-x64');
     }
-} else if (os.platform() == 'darwin') {
-  var chilkat = require('@chilkat/ck-node23-mac-universal');
 }
+
 
 // const chilkat = require('@chilkat/ck-node23-win64');
 
