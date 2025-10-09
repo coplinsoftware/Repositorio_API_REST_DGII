@@ -178,7 +178,6 @@ app.post('/fe/recepcion/api/ecf',upload.single('archivo') ,(req, res) => {
         }
     
     const v1_dir = './uploads/'+v_RNCEmisor;
-    res.send('prubando la api crear emisor enupload ');
     if (!fs.existsSync(v1_dir)){
         fs.mkdirSync(v1_dir);
     }
