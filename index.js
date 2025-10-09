@@ -82,7 +82,8 @@ const storage = multer.diskStorage({
 const app = express();
 const port = process.env.PUERTO;
 app.get('/fe/recepcion/api/ecp', (req, res) => {
-    res.send('Entro a Servidor /fe/recepcion/api/ecp');
+    res.send('Entro a Servidor /fe/recepcion/api/ecp, Version de Node.js: '+process.version);
+
 });
 
 app.get('/', (req, res) => {
