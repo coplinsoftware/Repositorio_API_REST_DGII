@@ -53,11 +53,11 @@ var glob = new chilkat.Global();
     }
 
 function crear_folder_emisor_enupload(vfolder) {
-    const dir = './uploads/'+vfolder;
+    const v1_dir = './uploads/'+vfolder;
     res.send('prubando la api crear_folder_emisor_enupload ');
 
-    if (!fs.existsSync(dir)){
-        fs.mkdirSync(dir);
+    if (!fs.existsSync(v1_dir)){
+        fs.mkdirSync(v1_dir);
     }
 /*
 const fs = require('fs');
@@ -73,16 +73,16 @@ try {
 }
 
 function crear_folder_emisor_enviados(vfolder) {
-    const dir = './enviados/'+vfolder;
-    if (!fs.existsSync(dir)){
-        fs.mkdirSync(dir);
+    const v2_dir = './enviados/'+vfolder;
+    if (!fs.existsSync(v2_dir)){
+        fs.mkdirSync(v2_dir);
     }
 }
 
 function crear_folder_emisor_enviados(vfolder) {
-    const dir = './enviados/'+vfolder;
-    if (!fs.existsSync(dir)){
-        fs.mkdirSync(dir);
+    const v3_dir = './enviados/'+vfolder;
+    if (!fs.existsSync(v3_dir)){
+        fs.mkdirSync(v3_dir);
     }
 }
 
