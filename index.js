@@ -104,10 +104,11 @@ app.post('/fe/recepcion/api/ecf',upload.single('archivo') ,(req, res) => {
     const parser = new xmldom.DOMParser();
     const xmlDoc = parser.parseFromString(xmlString, "text/xml");
 // Trabaja con xmlDoc para obtener tus datos [5]
-//  res.send('prubando la api 107');
+
   const doc = parser.parseFromString(xmlString, "text/xml"); // Parsea la cadena XML
   // Ahora 'doc' es un objeto de documento similar al que tendrías en un navegador
   // Puedes acceder a los nodos y elementos de forma similar a la API DOM
+
     const todosLosTags = doc.getElementsByTagName('*'); // Selecciona todos los elementos
     let v_RNCEmisor=''
     let v_RNCComprador=''
@@ -147,10 +148,9 @@ app.post('/fe/recepcion/api/ecf',upload.single('archivo') ,(req, res) => {
     
           }
         }
+        
     crear_folder_emisor_enupload(v_RNCEmisor);
     crear_folder_emisor_enviados(v_RNCEmisor);
-
-	res.send('prubando despues de crear folder');        
 
     res.send('prubando la api 155');
     console.log('v_RNCEmisor ',v_RNCEmisor);
@@ -203,7 +203,6 @@ app.post('/fe/recepcion/api/ecf',upload.single('archivo') ,(req, res) => {
         // return res.status(500).json({
         //res.send
     }
-  
     /*
 	if (lnSuccess != 1) {
         console.log('Error en Certificado Digital, Chequear Archivo de Firma y/o Clave Privada');
@@ -295,6 +294,8 @@ function uploadFile(req, res) {
 
 function crear_folder_emisor_enupload(vfolder) {
     const dir = './uploads/'+vfolder;
+    res.send('prubando la api crear_folder_emisor_enupload ');
+
     if (!fs.existsSync(dir)){
         fs.mkdirSync(dir);
     }
