@@ -7,9 +7,22 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
 */
+var os = require('os');
+if (os.platform() == 'win32') {  
+  var chilkat = require('@chilkat/ck-node23-win64'); 
+} else if (os.platform() == 'linux') {
+    if (os.arch() == 'arm') {
+        var chilkat = require('@chilkat/ck-node23-linux-arm');
+    } else if (os.arch() == 'arm64') {
+        var chilkat = require('@chilkat/ck-node23-linux-arm64');
+    } else {
+        var chilkat = require('@chilkat/ck-node23-linux-x64');
+    }
+} else if (os.platform() == 'darwin') {
+  var chilkat = require('@chilkat/ck-node23-mac-universal');
+}
 
-//const chilkat = require('@chilkat/ck-node23-win64');
-const chilkat = require('@chilkat/ck-node23-linux-x64');
+// const chilkat = require('@chilkat/ck-node23-win64');
 
 //import chilkat from '@chilkat/ck-node23-win64';
 
@@ -73,10 +86,13 @@ const storage = multer.diskStorage({
 
 const app = express();
 const port = process.env.PUERTO;
+app.get('/fe/recepcion/api/ecp', (req, res) => {
+    res.send('Entro a Servidor /fe/recepcion/api/ecp');
+});
+
 app.get('/', (req, res) => {
     res.send('Servidor Express listo!');
 });
-
 app.use(morgan('dev'))
 
 app.post('/fe/recepcion/api/ecf',upload.single('archivo') ,(req, res) => {
@@ -102,7 +118,6 @@ app.post('/fe/recepcion/api/ecf',upload.single('archivo') ,(req, res) => {
     const v_FechaHoraAcuseRecibo_formateada = dayjs().format('DD-MM-YYYY HH:mm:ss')
 //    console.log('v_FechaHoraAcuseRecibo_formateada',v_FechaHoraAcuseRecibo_formateada)  
         // const builder_xml = new xml2js.Builder({ rootName: 'ARECF', xmldec: { 'version': '1.0', 'encoding': 'UTF-8' } });
-    
     //
     console.log('TodosLosTags: ',todosLosTags.length);
 
@@ -218,15 +233,19 @@ app.post('/fe/recepcion/api/ecf',upload.single('archivo') ,(req, res) => {
         return res.status(500).send('Error al verificar Firma Digital en API');
     }
     
-
-    vnombre_archivo_grabado = __dirname +'/enviados/'+v_RNCEmisor+'/'+vnombre_archivo
-    const vfolfer = __dirname +'/enviados';
+    // vnombre_archivo_grabado = __dirname +'\enviados\'+v_RNCEmisor+'\'+vnombre_archivo
+    // let vnombre_archivo=''
+    // let vnombre_archivo_grabado = __dirname +'\enviados\'+v_RNCEmisor+"\"+vnombre_archivo
+    // let vnombre_archivo_grabado = __dirname +'\enviados\'+v_RNCEmisor+"\"
+    // let vnombre_archivo_grabado = __dirname +'\enviados\'+v_RNCEmisor+'\'+vnombre_archivo
+    let vnombre_archivo_grabado = __dirname +'/enviados/'+vnombre_archivo
+    
+    const vfolfer = __dirname +'\enviados';
     //console.log('vnombre_archivo_grabado ',vnombre_archivo_grabado);
    	// lnSuccess = loSbXml.WriteFile('/enviados/'+vnombre_archivo_grabado,"utf-8",0)
     //console.log('Antes de '+vnombre_archivo);
     a = loSbXml.Xml
     //lnSuccess = loSbXml.WriteFile(vnombre_archivo,"utf-8",0)
- 
     lnSuccess = loSbXml.WriteFile(vnombre_archivo_grabado,"utf-8",0)
     if (lnSuccess !== true) {
         console.log('Error al grabar archivo firmado '+vnombre_archivo);
@@ -240,7 +259,8 @@ app.post('/fe/recepcion/api/ecf',upload.single('archivo') ,(req, res) => {
     console.log('Acuse de Recibo '+vnombre_archivo_grabado+' Enviado');
     const vroot = __dirname+'/enviados/'+v_RNCEmisor;
     console.log('vroot ',vroot);
-    res.status(200).sendFile(vnombre_archivo_grabado, { root: __dirname }, function (err) {
+    // res.status(200).sendFile(vnombre_archivo_grabado, { root: vroot }, function (err) {
+    res.status(200).sendFile(vnombre_archivo_grabado, function (err) {
         if (err) {
             res.status(500).send('Error al enviar el archivo: ');
           //console.log('Error al enviar el archivo:', err);
