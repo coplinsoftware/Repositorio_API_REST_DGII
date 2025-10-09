@@ -11,16 +11,8 @@ var os = require('os');
 if (os.platform() == 'win32') {  
   var chilkat = require('@chilkat/ck-node23-win64'); 
 } else if (os.platform() == 'linux') {
-    if (os.arch() == 'arm') {
-        var chilkat = require('@chilkat/ck-node23-linux-arm');
-    } else if (os.arch() == 'arm64') {
-        var chilkat = require('@chilkat/ck-node23-linux-arm64');
-    } else {
         var chilkat = require('@chilkat/ck-node23-linux-x64');
-    }
 }
-
-
 // const chilkat = require('@chilkat/ck-node23-win64');
 
 //import chilkat from '@chilkat/ck-node23-win64';
