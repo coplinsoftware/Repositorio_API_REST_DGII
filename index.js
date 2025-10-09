@@ -51,7 +51,7 @@ var glob = new chilkat.Global();
     if (success !== true) {
         console.log(glob.LastErrorText);
     }
-
+/*
 function crear_folder_emisor_enupload(vfolder) {
     const v1_dir = './uploads/'+vfolder;
     res.send('prubando la api crear_folder_emisor_enupload ');
@@ -60,6 +60,7 @@ function crear_folder_emisor_enupload(vfolder) {
         fs.mkdirSync(v1_dir);
     }
 /*
+*/
 const fs = require('fs');
 const path = require('path');
 const folderName = 'mySyncFolder';
@@ -69,23 +70,16 @@ try {
   console.log(`Folder "${folderName}" created successfully at ${folderPath}`);
 } catch (err) {
   console.error('Error creating folder:', err);
-*/
 }
 
-function crear_folder_emisor_enviados(vfolder) {
-    const v2_dir = './enviados/'+vfolder;
-    if (!fs.existsSync(v2_dir)){
-        fs.mkdirSync(v2_dir);
-    }
-}
-
+/*
 function crear_folder_emisor_enviados(vfolder) {
     const v3_dir = './enviados/'+vfolder;
     if (!fs.existsSync(v3_dir)){
         fs.mkdirSync(v3_dir);
     }
 }
-
+*/
 
 const vfolder_cliente = '';
 
@@ -181,11 +175,21 @@ app.post('/fe/recepcion/api/ecf',upload.single('archivo') ,(req, res) => {
     
           }
         }
-        
-    crear_folder_emisor_enupload(v_RNCEmisor);
-    crear_folder_emisor_enviados(v_RNCEmisor);
+    
+    const v1_dir = './uploads/'+v_RNCEmisor;
+    res.send('prubando la api crear emisor enupload ');
+    if (!fs.existsSync(v1_dir)){
+        fs.mkdirSync(v1_dir);
+    }
 
-    res.send('prubando la api 155');
+    const v3_dir = './enviados/'+v_RNCEmisor;
+    if (!fs.existsSync(v3_dir)){
+        fs.mkdirSync(v3_dir);
+    }
+ //   crear_folder_emisor_enupload(v_RNCEmisor);
+ //   crear_folder_emisor_enviados(v_RNCEmisor);
+
+    
     console.log('v_RNCEmisor ',v_RNCEmisor);
     const loXml = new chilkat.Xml();
     loXml.EmitCompact=1
