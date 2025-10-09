@@ -8,7 +8,8 @@ import { dirname } from 'path';
 
 */
 
-const chilkat = require('@chilkat/ck-node23-win64');
+//const chilkat = require('@chilkat/ck-node23-win64');
+const chilkat = require('@chilkat/ck-node23-linux-x64');
 
 //import chilkat from '@chilkat/ck-node23-win64';
 
