@@ -147,9 +147,10 @@ app.post('/fe/recepcion/api/ecf',upload.single('archivo') ,(req, res) => {
     
           }
         }
-	res.send('prubando la api antes crear folder');        
     crear_folder_emisor_enupload(v_RNCEmisor);
     crear_folder_emisor_enviados(v_RNCEmisor);
+
+	res.send('prubando despues de crear folder');        
 
     res.send('prubando la api 155');
     console.log('v_RNCEmisor ',v_RNCEmisor);
