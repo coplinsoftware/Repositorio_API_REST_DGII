@@ -7,17 +7,16 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
 */
-/*
 var os = require('os');
+var chilkat = require('@chilkat/ck-node23-linux-x64');
+//var chilkat = require('@chilkat/ck-node23-win64');
+/*
 if (os.platform() == 'win32') {  
   var chilkat = require('@chilkat/ck-node23-win64'); 
 } else if (os.platform() == 'linux') {
         var chilkat = require('@chilkat/ck-node23-linux-x64');
 }
 */
-
-var chilkat = require('@chilkat/ck-node23-linux-x64');
-
 // const chilkat = require('@chilkat/ck-node23-win64');
 
 //import chilkat from '@chilkat/ck-node23-win64';
@@ -92,6 +91,8 @@ app.get('/', (req, res) => {
 app.use(morgan('dev'))
 
 app.post('/fe/recepcion/api/ecf',upload.single('archivo') ,(req, res) => {
+//    return res.status(500).send('prubando la api');
+    console.log('Ver Conole Log');
     console.log(req.file);
     const xmlString = fs.readFileSync(req.file.path, 'utf-8');
 // Parsea el XML
