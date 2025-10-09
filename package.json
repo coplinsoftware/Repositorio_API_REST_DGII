@@ -17,6 +17,7 @@
       "@chilkat/ck-node23-mac-x64": "^11.1.0",
       "@chilkat/ck-node23-mac-arm64": "^11.1.0",
       "@chilkat/ck-node23-mac-universal": "^11.1.0",
+      "@chilkat%2fck-node23-mac-arm64": "^11.1.0",
     "dayjs": "^1.11.18",
     "dotenv": "^17.2.3",
     "morgan": "^1.10.1",
