@@ -95,7 +95,7 @@ app.use(morgan('dev'))
 
 app.post('/fe/recepcion/api/ecf',upload.single('archivo') ,(req, res) => {
 //    return res.status(500).send('prubando la api');
-    res.send('Prueba de proceso: '+process.version);
+    //res.send('Prueba de proceso: '+process.version);
 
     console.log('Ver Conole Log');
     console.log(req.file);
