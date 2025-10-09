@@ -122,6 +122,17 @@ app.get('/', (req, res) => {
 });
 app.use(morgan('dev'))
 
+const v10_dir = './uploads';
+if (!fs.existsSync(v10_dir)){
+    fs.mkdirSync(v10_dir);
+}
+
+
+const v30_dir = './enviados'
+if (!fs.existsSync(v30_dir)){
+    fs.mkdirSync(v30_dir);
+}
+
 app.post('/fe/recepcion/api/ecf',upload.single('archivo') ,(req, res) => {
 //    return res.status(500).send('prubando la api');
     //res.send('Prueba de proceso: '+process.version);
@@ -176,7 +187,7 @@ app.post('/fe/recepcion/api/ecf',upload.single('archivo') ,(req, res) => {
     
           }
         }
-    res.send('Error en mkdirSync, '+v_RNCEmisor+' '+v_RNCComprador+' '+v_eNCF);
+    //res.send('Error en mkdirSync, '+v_RNCEmisor+' '+v_RNCComprador+' '+v_eNCF);
     const v1_dir = './uploads/'+v_RNCEmisor;
     if (!fs.existsSync(v1_dir)){
         fs.mkdirSync(v1_dir);
