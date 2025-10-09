@@ -176,11 +176,12 @@ app.post('/fe/recepcion/api/ecf',upload.single('archivo') ,(req, res) => {
     
           }
         }
-    
+    res.send('Error en mkdirSync, '+v_RNCEmisor+' '+v_RNCComprador+' '+v_eNCF);
     const v1_dir = './uploads/'+v_RNCEmisor;
     if (!fs.existsSync(v1_dir)){
         fs.mkdirSync(v1_dir);
     }
+
 
     const v3_dir = './enviados/'+v_RNCEmisor;
     if (!fs.existsSync(v3_dir)){
