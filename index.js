@@ -7,12 +7,17 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
 */
+/*
 var os = require('os');
 if (os.platform() == 'win32') {  
   var chilkat = require('@chilkat/ck-node23-win64'); 
 } else if (os.platform() == 'linux') {
         var chilkat = require('@chilkat/ck-node23-linux-x64');
 }
+*/
+
+var chilkat = require('@chilkat/ck-node23-linux-x64');
+
 // const chilkat = require('@chilkat/ck-node23-win64');
 
 //import chilkat from '@chilkat/ck-node23-win64';
