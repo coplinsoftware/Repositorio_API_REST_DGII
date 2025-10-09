@@ -104,11 +104,11 @@ app.post('/fe/recepcion/api/ecf',upload.single('archivo') ,(req, res) => {
     const parser = new xmldom.DOMParser();
     const xmlDoc = parser.parseFromString(xmlString, "text/xml");
 // Trabaja con xmlDoc para obtener tus datos [5]
-  res.send('prubando la api 107');
+//  res.send('prubando la api 107');
   const doc = parser.parseFromString(xmlString, "text/xml"); // Parsea la cadena XML
   // Ahora 'doc' es un objeto de documento similar al que tendrías en un navegador
   // Puedes acceder a los nodos y elementos de forma similar a la API DOM
-
+  res.send('prubando la api 110');
     const todosLosTags = doc.getElementsByTagName('*'); // Selecciona todos los elementos
     let v_RNCEmisor=''
     let v_RNCComprador=''
