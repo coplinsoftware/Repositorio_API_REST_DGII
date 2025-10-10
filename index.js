@@ -127,7 +127,7 @@ app.get('/', (req, res) => {
 });
 app.use(morgan('dev'))
 
-app.post('/fe/recepcion/api/ecf',upload.single('xml') ,(req, res) => {
+app.post('/fe/recepcion/api/ecf',upload.single('text/xml') ,(req, res) => {
 //    return res.status(500).send('prubando la api');
     //res.send('Prueba de proceso: '+process.version);
     console.log('Ver Conole Log');
