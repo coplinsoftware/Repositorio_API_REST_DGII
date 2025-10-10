@@ -9,7 +9,7 @@ import { dirname } from 'path';
 */
 var os = require('os');
 var  chilkat = require('@chilkat/ck-node23-linux-x64');
-//var chilkat = require('@chilkat/ck-node23-win64');
+// var chilkat = require('@chilkat/ck-node23-win64');
 /*
 if (os.platform() == 'win32') {  
   var chilkat = require('@chilkat/ck-node23-win64'); 
@@ -137,10 +137,16 @@ app.post('/fe/recepcion/api/ecf',upload.single('archivo') ,(req, res) => {
     const parser = new xmldom.DOMParser();
     const xmlDoc = parser.parseFromString(xmlString, "text/xml");
 // Trabaja con xmlDoc para obtener tus datos [5]
-    const doc = parser.parseFromString(xmlString, "text/xml"); // Parsea la cadena XML
+    const doc = parser.parseFromString(xmlString, "text/xml"); // Parsea la cadena XML    
+    const rootElement = xmlDoc.documentElement;
+// Obtén el nombre de la etiqueta raíz
+    const rootTagName = rootElement.nodeName;
+    console.log('rootTagName  '+rootTagName);
+    if (rootTagName !== 'ECF') {
+        return res.status(400).send('Tipo Documento Invalido');
+    }
   // Ahora 'doc' es un objeto de documento similar al que tendrías en un navegador
   // Puedes acceder a los nodos y elementos de forma similar a la API DOM
-
     const todosLosTags = doc.getElementsByTagName('*'); // Selecciona todos los elementos
     let v_RNCEmisor=''
     let v_RNCComprador=''
@@ -234,7 +240,7 @@ app.post('/fe/recepcion/api/ecf',upload.single('archivo') ,(req, res) => {
     if (lnSuccess !== true) {
         console.log('Error en Certificado Digital, Chequear Archivo de Firma y/o Clave Privada ');
         //console.log('loCert.LastErrorText');
-        return res.status(500).send('Error en Certificado Digital, Chequear Certificado, Clave Privada y/o Certificado Vencido');
+        return res.status(400).send('Error en Certificado Digital, Chequear Certificado, Clave Privada y/o Certificado Vencido');
         // return res.status(500).json({
         //res.send
     }
@@ -255,9 +261,8 @@ app.post('/fe/recepcion/api/ecf',upload.single('archivo') ,(req, res) => {
         //console.log('lnSuccess Firma ',lnSuccess);
         //console.log('lnSuccess Firma ',lnSuccess);
         //res.send(loGen.LastErrorText);
-        return res.status(500).send('No Ejecuto Firma Digital');
+        return res.status(400).send('No Ejecuto Firma Digital');
     }
-
 // ----------------------------------------
 // Verify the signatures we just produced...
     const verifier = new chilkat.XmlDSig();
@@ -266,7 +271,7 @@ app.post('/fe/recepcion/api/ecf',upload.single('archivo') ,(req, res) => {
         console.log('Error al verificar Firma Digital en API');
         //console.log(verifier.LastErrorText);
         //res.send(verifier.LastErrorText);
-        return res.status(500).send('Error al verificar Firma Digital en API');
+        return res.status(400).send('Error al verificar Firma Digital en API');
     }
     // vnombre_archivo_grabado = __dirname +'\enviados\'+v_RNCEmisor+'\'+vnombre_archivo
     // let vnombre_archivo=''
@@ -283,7 +288,7 @@ app.post('/fe/recepcion/api/ecf',upload.single('archivo') ,(req, res) => {
     lnSuccess = loSbXml.WriteFile(vnombre_archivo_grabado,"utf-8",0)
     if (lnSuccess !== true) {
         console.log('Error al grabar archivo firmado '+vnombre_archivo);
-        return res.status(500).send('Error al grabar archivo firmado '+vnombre_archivo);
+        return res.status(400).send('Error al grabar archivo firmado '+vnombre_archivo);
     }
 //    console.log('Despues de '+vnombre_archivo);
 //    res.send(`Texto original: "${texto}"<br
@@ -296,7 +301,7 @@ app.post('/fe/recepcion/api/ecf',upload.single('archivo') ,(req, res) => {
     // res.status(200).sendFile(vnombre_archivo_grabado, { root: vroot }, function (err) {
     res.status(200).sendFile(vnombre_archivo_grabado, function (err) {
     if (err) {
-        res.status(500).send('Error al enviar el archivo: ');
+        res.status(400).send('Error al enviar el archivo: ');
           //console.log('Error al enviar el archivo:', err);
         }
     })
@@ -318,7 +323,16 @@ app.post('/fe/aprobacioncomercial/api/ecf',upload.single('archivo') ,(req, res) 
     const xmlDoc = parser.parseFromString(xmlString, "text/xml");
 // Trabaja con xmlDoc para obtener tus datos [5]
     const doc = parser.parseFromString(xmlString, "text/xml"); // Parsea la cadena XML
-  // Ahora 'doc' es un objeto de documento similar al que tendrías en un navegador
+    // console.log('doc.documentElement '+doc.documentElement)
+// Obtén el nodo raíz del documento
+    const rootElement = xmlDoc.documentElement;
+// Obtén el nombre de la etiqueta raíz
+    const rootTagName = rootElement.nodeName;
+    console.log('rootTagName  '+rootTagName);
+    if (rootTagName !== 'ACECF') {
+        return res.status(400).send('Tipo Documento Invalido');
+    }
+    // Ahora 'doc' es un objeto de documento similar al que tendrías en un navegador
   // Puedes acceder a los nodos y elementos de forma similar a la API DOM
   /*
         <xs:element name="DetalleAprobacionComercial" maxOccurs="1">
@@ -447,6 +461,7 @@ app.post('/fe/aprobacioncomercial/api/ecf',upload.single('archivo') ,(req, res) 
     {
         console.log('req.file.path ',req.file.path);
         res.status(200).send('Recepcion Comercial Exitosa')
+        //res.status(200).
     } 
 });
 
