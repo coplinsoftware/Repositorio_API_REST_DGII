@@ -151,7 +151,7 @@ app.post('/fe/recepcion/api/ecf',upload.single('xml') ,(req, res) => {
     let v_RNCEmisor=''
     let v_RNCComprador=''
     let v_eNCF=''
-    let v_Estado='0'
+    let v_Estado='1'
     let v_Version=''
 
     const v_FechaHoraAcuseRecibo = dayjs().format('DD-MM-YYYY HH:mm:ss')
@@ -299,15 +299,15 @@ app.post('/fe/recepcion/api/ecf',upload.single('xml') ,(req, res) => {
     const vroot = __dirname+'/enviados/'+v_RNCEmisor;
     console.log('vroot ',vroot);
     // res.status(200).sendFile(vnombre_archivo_grabado, { root: vroot }, function (err) {
-    /*
+    
     res.status(200).sendFile(vnombre_archivo_grabado, function (err) {
     if (err) {
         res.status(400).send('Error al enviar el archivo: ');
           //console.log('Error al enviar el archivo:', err);
         }
     })
-    */
-    res.status(200).sendFile(vnombre_archivo_grabado)
+    
+    //s.status(200).sendFile(vnombre_archivo_grabado)
 //res.status(200).sendfile(vnombre_archivo);
 //res.send('Firmado Exitosamente '+loSbXml);
 //res.send('Firma Exitosa:');
