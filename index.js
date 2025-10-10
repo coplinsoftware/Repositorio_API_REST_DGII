@@ -8,7 +8,7 @@ import { dirname } from 'path';
 
 */
 var os = require('os');
-var chilkat = require('@chilkat/ck-node23-linux-x64');
+var  chilkat = require('@chilkat/ck-node23-linux-x64');
 //var chilkat = require('@chilkat/ck-node23-win64');
 /*
 if (os.platform() == 'win32') {  
@@ -107,36 +107,29 @@ const storage = multer.diskStorage({
   }
 });
 */
-
-const app = express();
-
-//const port = process.env.PUERTO;
-const port= process.env.port || 3000;
-app.get('/fe/recepcion/api/ecp', (req, res) => {
-    res.send('Entro a Servidor /fe/recepcion/api/ecp, Version de Node.js: '+process.version);
-
-});
-
-app.get('/', (req, res) => {
-    res.send('Servidor Express listo!');
-});
-app.use(morgan('dev'))
-
 const v10_dir = './uploads';
 if (!fs.existsSync(v10_dir)){
     fs.mkdirSync(v10_dir);
 }
-
 
 const v30_dir = './enviados'
 if (!fs.existsSync(v30_dir)){
     fs.mkdirSync(v30_dir);
 }
 
+const app = express();
+
+//const port = process.env.PUERTO;
+const port= process.env.port || 3000;
+
+app.get('/', (req, res) => {
+    res.send('Servidor Express listo!');
+});
+app.use(morgan('dev'))
+
 app.post('/fe/recepcion/api/ecf',upload.single('archivo') ,(req, res) => {
 //    return res.status(500).send('prubando la api');
     //res.send('Prueba de proceso: '+process.version);
-
     console.log('Ver Conole Log');
     console.log(req.file);
     const xmlString = fs.readFileSync(req.file.path, 'utf-8');
@@ -187,21 +180,17 @@ app.post('/fe/recepcion/api/ecf',upload.single('archivo') ,(req, res) => {
     
           }
         }
-    //res.send('Error en mkdirSync, '+v_RNCEmisor+' '+v_RNCComprador+' '+v_eNCF);
+    
     const v1_dir = './uploads/'+v_RNCEmisor;
     if (!fs.existsSync(v1_dir)){
         fs.mkdirSync(v1_dir);
     }
 
-
     const v3_dir = './enviados/'+v_RNCEmisor;
     if (!fs.existsSync(v3_dir)){
         fs.mkdirSync(v3_dir);
     }
- //   crear_folder_emisor_enupload(v_RNCEmisor);
- //   crear_folder_emisor_enviados(v_RNCEmisor);
 
-    
     console.log('v_RNCEmisor ',v_RNCEmisor);
     const loXml = new chilkat.Xml();
     loXml.EmitCompact=1
@@ -225,25 +214,22 @@ app.post('/fe/recepcion/api/ecf',upload.single('archivo') ,(req, res) => {
     let vnombre_archivo_completo='.enviados/'+vnombre_archivo
 
     const loGen = new chilkat.XmlDSigGen;
-	loGen.Behaviors = "CompactSignedXml";
-	loGen.SigLocation = 'ARECF';
-	loGen.SigLocationMod = 0;
-	loGen.SigNamespacePrefix = "";
-	loGen.SigNamespaceUri = "http://www.w3.org/2000/09/xmldsig#";
-	loGen.SignedInfoCanonAlg = "C14N";
-	loGen.SignedInfoDigestMethod = "sha256";
-
-	//* -------- Reference 1 --------
-	
-	loGen.AddSameDocRef("","sha256","","","")
-
+    loGen.Behaviors = "CompactSignedXml";
+    loGen.SigLocation = 'ARECF';
+    loGen.SigLocationMod = 0;
+    loGen.SigNamespacePrefix = "";
+    loGen.SigNamespaceUri = "http://www.w3.org/2000/09/xmldsig#";
+    loGen.SignedInfoCanonAlg = "C14N";
+    loGen.SignedInfoDigestMethod = "sha256";
+    //* -------- Reference 1 --------
+    loGen.AddSameDocRef("","sha256","","","")
 //	* Provide a certificate + private key. (PFX password is test123)
 //	* For versions of Chilkat < 10.0.0, use CreateObject('Chilkat_9_5_0.Cert')
-	const loCert = new chilkat.Cert;
+    const loCert = new chilkat.Cert;
     
     const p_nombre_certi = "certificado_dgii.p12";
     const p_Clave_Certificado = "Joselito77";
-	lnSuccess = loCert.LoadPfxFile(p_nombre_certi,p_Clave_Certificado);
+    lnSuccess = loCert.LoadPfxFile(p_nombre_certi,p_Clave_Certificado);
     
     if (lnSuccess !== true) {
         console.log('Error en Certificado Digital, Chequear Archivo de Firma y/o Clave Privada ');
@@ -253,17 +239,17 @@ app.post('/fe/recepcion/api/ecf',upload.single('archivo') ,(req, res) => {
         //res.send
     }
     /*
-	if (lnSuccess != 1) {
+    if (lnSuccess != 1) {
         console.log('Error en Certificado Digital, Chequear Archivo de Firma y/o Clave Privada');
     }
   */  
-	loGen.SetX509Cert(loCert,1) 
+    loGen.SetX509Cert(loCert,1) 
     loGen.KeyInfoType = "X509Data+KeyValue"
-	loGen.KeyInfoType = "X509Data"
-	loGen.X509Type = "Certificate"
+    loGen.KeyInfoType = "X509Data"
+    loGen.X509Type = "Certificate"
     loSbXml.Trim()
 //
-	lnSuccess = loGen.CreateXmlDSigSb(loSbXml);
+    lnSuccess = loGen.CreateXmlDSigSb(loSbXml);
     if (lnSuccess != true) {
          console.log(loGen.LastErrorText);
         //console.log('lnSuccess Firma ',lnSuccess);
@@ -274,27 +260,23 @@ app.post('/fe/recepcion/api/ecf',upload.single('archivo') ,(req, res) => {
 
 // ----------------------------------------
 // Verify the signatures we just produced...
-
     const verifier = new chilkat.XmlDSig();
     success = verifier.LoadSignatureSb(loSbXml);
-    
     if (success != true) {
         console.log('Error al verificar Firma Digital en API');
         //console.log(verifier.LastErrorText);
         //res.send(verifier.LastErrorText);
         return res.status(500).send('Error al verificar Firma Digital en API');
     }
-    
     // vnombre_archivo_grabado = __dirname +'\enviados\'+v_RNCEmisor+'\'+vnombre_archivo
     // let vnombre_archivo=''
     // let vnombre_archivo_grabado = __dirname +'\enviados\'+v_RNCEmisor+"\"+vnombre_archivo
     // let vnombre_archivo_grabado = __dirname +'\enviados\'+v_RNCEmisor+"\"
     // let vnombre_archivo_grabado = __dirname +'\enviados\'+v_RNCEmisor+'\'+vnombre_archivo
     let vnombre_archivo_grabado = __dirname +'/enviados/'+vnombre_archivo
-    
     const vfolfer = __dirname +'\enviados';
     //console.log('vnombre_archivo_grabado ',vnombre_archivo_grabado);
-   	// lnSuccess = loSbXml.WriteFile('/enviados/'+vnombre_archivo_grabado,"utf-8",0)
+    // lnSuccess = loSbXml.WriteFile('/enviados/'+vnombre_archivo_grabado,"utf-8",0)
     //console.log('Antes de '+vnombre_archivo);
     a = loSbXml.Xml
     //lnSuccess = loSbXml.WriteFile(vnombre_archivo,"utf-8",0)
@@ -313,20 +295,163 @@ app.post('/fe/recepcion/api/ecf',upload.single('archivo') ,(req, res) => {
     console.log('vroot ',vroot);
     // res.status(200).sendFile(vnombre_archivo_grabado, { root: vroot }, function (err) {
     res.status(200).sendFile(vnombre_archivo_grabado, function (err) {
-        if (err) {
-            res.status(500).send('Error al enviar el archivo: ');
+    if (err) {
+        res.status(500).send('Error al enviar el archivo: ');
           //console.log('Error al enviar el archivo:', err);
         }
     })
-    //res.status(200).sendfile(vnombre_archivo);
-  
+//res.status(200).sendfile(vnombre_archivo);
 //res.send('Firmado Exitosamente '+loSbXml);
-    //res.send('Firma Exitosa:');
+//res.send('Firma Exitosa:');
 
+});
+// Fin Recepcion Comprobante
+
+app.post('/fe/aprobacioncomercial/api/ecf',upload.single('archivo') ,(req, res) => {
+//    return res.status(500).send('prubando la api');
+    //res.send('Prueba de proceso: '+process.version);
+
+    console.log(req.file);
+    const xmlString = fs.readFileSync(req.file.path, 'utf-8');
+// Parsea el XML
+    const parser = new xmldom.DOMParser();
+    const xmlDoc = parser.parseFromString(xmlString, "text/xml");
+// Trabaja con xmlDoc para obtener tus datos [5]
+    const doc = parser.parseFromString(xmlString, "text/xml"); // Parsea la cadena XML
+  // Ahora 'doc' es un objeto de documento similar al que tendrías en un navegador
+  // Puedes acceder a los nodos y elementos de forma similar a la API DOM
+  /*
+        <xs:element name="DetalleAprobacionComercial" maxOccurs="1">
+        <xs:element name="Version" type="versionType" minOccurs="1"  maxOccurs="1"/>
+        :element name="RNCEmisor" type="RNCValidation" minOccurs="1" maxOccurs="1"/>
+        <xs:element name="eNCF" type="AlfaNum11Validation" minOccurs="1" maxOccurs="1"/>
+        <xs:element name="FechaEmision" type="DateValidation" minOccurs="1" maxOccurs="1"/>
+        <xs:element name="MontoTotal" type="Decimal18D2Validation" minOccurs="1"  maxOccurs="1"/>
+        <xs:element name="RNCComprador" type="RNCValidation" minOccurs="1" maxOccurs="1"/>
+        <xs:element name="Estado" type="EstadoType" minOccurs="1" maxOccurs="1"/>
+        <xs:element name="DetalleMotivoRechazo" type="AlfaNum250Validation" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="FechaHoraAprobacionComercial" type="DateAndTimeValidation" minOccurs="1" maxOccurs="1"/>
+*/
+     const todosLosTags = doc.getElementsByTagName('*'); // Selecciona todos los elementos
+     let v_RNCEmisor=''
+     let v_RNCComprador=''
+     let v_eNCF=''
+     let v_Estado=''
+     let v_Version=''
+     let v_FechaEmision = ''
+     let v_MontoTotal = ''
+     let v_DetalleMotivoRechazo = ''
+     let v_FechaHoraAprobacionComercial = ''
+     const v_FechaHoraAcuseRecibo = dayjs().format('DD-MM-YYYY HH:mm:ss')
+//    console.log('v_FechaHoraAcuseRecibo_formateada',v_FechaHoraAcuseRecibo)
+     const v_FechaHoraAcuseRecibo_formateada = dayjs().format('DD-MM-YYYY HH:mm:ss')
+//    console.log('v_FechaHoraAcuseRecibo_formateada',v_FechaHoraAcuseRecibo_formateada)  
+// const builder_xml = new xml2js.Builder({ rootName: 'ARECF', xmldec: { 'version': '1.0', 'encoding': 'UTF-8' } });
+//
+    console.log('TodosLosTags: ',todosLosTags.length);
+        for (let i = 0; i < todosLosTags.length; i++) {
+            let vtagname = todosLosTags[i].nodeName;
+            
+//            console.log('Tag: ',vtagname,' Valor: ',todosLosTags[i].textContent);
+
+            switch (vtagname) {
+    
+            case 'RNCEmisor':
+                v_RNCEmisor = todosLosTags[i].textContent;
+    
+            case 'RNCComprador':
+                v_RNCComprador = todosLosTags[i].textContent;   
+            
+            case 'IdentificadorExtranjero':
+                v_RNCComprador = todosLosTags[i].textContent;   
+    
+            case 'eNCF':
+                v_eNCF = todosLosTags[i].textContent;
+
+            case 'FechaEmision':
+                v_FechaEmision = todosLosTags[i].textContent;   
+
+            case 'MontoTotal':
+                v_MontoTotal = todosLosTags[i].textContent;   
+
+            case 'Estado':
+                v_Estado = todosLosTags[i].textContent;   
+
+            case 'DetalleMotivoRechazo':
+                v_DetalleMotivoRechazo = todosLosTags[i].textContent;   
+
+            case 'FechaHoraAprobacionComercial':
+                v_FechaHoraAprobacionComercial = todosLosTags[i].textContent;
+
+            //case 'Version':
+            //    v_Version = todosLosTags[i].textContent;
+          }
+        }
+
+    let vnombre_archivo='ACECF' + v_RNCEmisor+v_eNCF+'.xml'
+    
+    const v1_dir = './uploads/'+v_RNCEmisor;
+    if (!fs.existsSync(v1_dir)){
+        fs.mkdirSync(v1_dir);
+    }
+
+    const v3_dir = './enviados/'+v_RNCEmisor;
+    if (!fs.existsSync(v3_dir)){
+        fs.mkdirSync(v3_dir);
+    }
+ //res.send('Error en mkdirSync, '+v_RNCEmisor+' '+v_RNCComprador+' '+v_eNCF);
+ //   crear_folder_emisor_enupload(v_RNCEmisor);
+ //   crear_folder_emisor_enviados(v_RNCEmisor);    
+    console.log('v_RNCEmisor ',v_RNCEmisor);
+/*
+    const loXml = new chilkat.Xml();
+    loXml.EmitCompact=1
+    loXml.Tag = "ACECF"
+    loXml.AddAttribute("xmlns:xsd","http://www.w3.org/2001/XMLSchema")
+    loXml.AddAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance")
+    loXml.UpdateChildContent("DetalleAprobacionComercial|Version",process.env.VERSION);
+    loXml.UpdateChildContent("DetalleAprobacionComercial|RNCEmisor",v_RNCEmisor)
+    loXml.UpdateChildContent("DetalleAprobacionComercial|RNCComprador",v_RNCComprador)
+    loXml.UpdateChildContent("DetalleAcusedeRecibo|eNCF",v_eNCF)
+    loXml.UpdateChildContent("DetalleAcusedeRecibo|Estado",v_Estado)
+    loXml.UpdateChildContent("DetalleAcusedeRecibo|FechaHoraAcuseRecibo",v_FechaHoraAcuseRecibo)
+*/
+// loXml.GetXmlSb(loSbXml)
+//codigo Firma archivo
+    let vnombre_archivo_grabado = __dirname +'/enviados/'+vnombre_archivo
+    const vfolfer = __dirname +'\enviados';
+//console.log('vnombre_archivo_grabado ',vnombre_archivo_grabado);
+// lnSuccess = loSbXml.WriteFile('/enviados/'+vnombre_archivo_grabado,"utf-8",0)
+//console.log('Antes de '+vnombre_archivo);
+//lnSuccess = loSbXml.WriteFile(vnombre_archivo,"utf-8",0)
+//    console.log('Despues de '+vnombre_archivo);
+//    res.send(`Texto original: "${texto}"<br
+// >Texto procesado por Chilkat: "${textoProcesado}"`);
+//return res.status(200).sendfile(vnombre_archivo);
+//res.status(200).send(a);
+    console.log('Aprbacion Comercial ');
+    const vroot = __dirname+'/enviados/'+v_RNCEmisor;
+    // res.status(200).sendFile(vnombre_archivo_grabado, { root: vroot }, function (err) {
+    if (v_RNCComprador!=='131660673' && v_RNCComprador!=='130935132' && v_RNCComprador!=='130808112' && v_RNCComprador!=='131219551') {
+
+        const filePath = req.file.path; // Reemplaza con la ruta correcta
+        console.log('req.file.path ',req.file.path);
+        fs.unlink(filePath, (err) => {
+        if (err) {
+            console.error(`Error al eliminar el archivo: ${err}`);
+        }
+        })
+        res.status(400).send('RNC Comprador Desconocido')
+    }        
+    else
+    {
+        console.log('req.file.path ',req.file.path);
+        res.status(200).send('Recepcion Comercial Exitosa')
+    } 
 });
 
 app.listen(port, () => {
-  console.log(`Servidor API REST escuchando en puerto: ${port}`);
+     console.log(`Servidor API REST Coplin Software Escuchando En Puerto: ${port}`);
 })
 
 function uploadFile(req, res) {
@@ -340,4 +465,3 @@ function uploadFile(req, res) {
         });
     });
 }
-
