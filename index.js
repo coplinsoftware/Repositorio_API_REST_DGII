@@ -233,8 +233,8 @@ app.post('/fe/recepcion/api/ecf',upload.single('xml') ,(req, res) => {
 //	* For versions of Chilkat < 10.0.0, use CreateObject('Chilkat_9_5_0.Cert')
     const loCert = new chilkat.Cert;
     
-    const p_nombre_certi = "certificado_dgii.p12";
-    const p_Clave_Certificado = "Joselito77";
+    const p_nombre_certi = "Certificado_Jofha.p12";
+    const p_Clave_Certificado = "jamv27JMFV";
     lnSuccess = loCert.LoadPfxFile(p_nombre_certi,p_Clave_Certificado);
     
     if (lnSuccess !== true) {
