@@ -201,8 +201,8 @@ app.post('/fe/recepcion/api/ecf',upload.single('xml') ,(req, res) => {
     const loXml = new chilkat.Xml();
     loXml.EmitCompact=1
     loXml.Tag = "ACECF"
-    loXml.AddAttribute("xmlns:xsd","http://www.w3.org/2001/XMLSchema")
-    loXml.AddAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance")
+//    loXml.AddAttribute("xmlns:xsd","http://www.w3.org/2001/XMLSchema")
+//    loXml.AddAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance")
     loXml.UpdateChildContent("DetalleAcusedeRecibo|Version",process.env.VERSION);
     loXml.UpdateChildContent("DetalleAcusedeRecibo|RNCEmisor",v_RNCEmisor)
     loXml.UpdateChildContent("DetalleAcusedeRecibo|RNCComprador",v_RNCComprador)
@@ -299,7 +299,6 @@ app.post('/fe/recepcion/api/ecf',upload.single('xml') ,(req, res) => {
     const vroot = __dirname+'/enviados/'+v_RNCEmisor;
     console.log('vroot ',vroot);
     // res.status(200).sendFile(vnombre_archivo_grabado, { root: vroot }, function (err) {
-    
     res.status(200).sendFile(vnombre_archivo_grabado, function (err) {
     if (err) {
         res.status(400).send('Error al enviar el archivo: ');
