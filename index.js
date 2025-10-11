@@ -9,7 +9,7 @@ import { dirname } from 'path';
 */
 var os = require('os');
 var  chilkat = require('@chilkat/ck-node23-linux-x64');
-// var chilkat = require('@chilkat/ck-node23-win64');
+//var chilkat = require('@chilkat/ck-node23-win64');
 /*
 if (os.platform() == 'win32') {  
   var chilkat = require('@chilkat/ck-node23-win64'); 
@@ -151,13 +151,13 @@ app.post('/fe/recepcion/api/ecf',upload.single('xml') ,(req, res) => {
     let v_RNCEmisor=''
     let v_RNCComprador=''
     let v_eNCF=''
-    let v_Estado='1'
+    let v_Estado='0'
     let v_Version=''
 
     const v_FechaHoraAcuseRecibo = dayjs().format('DD-MM-YYYY HH:mm:ss')
-    console.log('v_FechaHoraAcuseRecibo_formateada',v_FechaHoraAcuseRecibo)
+//    console.log('v_FechaHoraAcuseRecibo_formateada',v_FechaHoraAcuseRecibo)
     const v_FechaHoraAcuseRecibo_formateada = dayjs().format('DD-MM-YYYY HH:mm:ss')
-    console.log('v_FechaHoraAcuseRecibo_formateada',v_FechaHoraAcuseRecibo_formateada)
+//    console.log('v_FechaHoraAcuseRecibo_formateada',v_FechaHoraAcuseRecibo_formateada)  
         // const builder_xml = new xml2js.Builder({ rootName: 'ARECF', xmldec: { 'version': '1.0', 'encoding': 'UTF-8' } });
     //
     console.log('TodosLosTags: ',todosLosTags.length);
@@ -200,9 +200,9 @@ app.post('/fe/recepcion/api/ecf',upload.single('xml') ,(req, res) => {
     console.log('v_RNCEmisor ',v_RNCEmisor);
     const loXml = new chilkat.Xml();
     loXml.EmitCompact=1
-    loXml.Tag = "ACECF"
-//    loXml.AddAttribute("xmlns:xsd","http://www.w3.org/2001/XMLSchema")
-//    loXml.AddAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance")
+    loXml.Tag = "ARECF"
+    //loXml.AddAttribute("xmlns:xsd","http://www.w3.org/2001/XMLSchema")
+    //loXml.AddAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance")
     loXml.UpdateChildContent("DetalleAcusedeRecibo|Version",process.env.VERSION);
     loXml.UpdateChildContent("DetalleAcusedeRecibo|RNCEmisor",v_RNCEmisor)
     loXml.UpdateChildContent("DetalleAcusedeRecibo|RNCComprador",v_RNCComprador)
@@ -221,21 +221,27 @@ app.post('/fe/recepcion/api/ecf',upload.single('xml') ,(req, res) => {
 
     const loGen = new chilkat.XmlDSigGen;
     loGen.Behaviors = "CompactSignedXml";
-    loGen.SigLocation = 'ACECF';
+    loGen.SigLocation = 'ARECF';
     loGen.SigLocationMod = 0;
     loGen.SigNamespacePrefix = "";
     loGen.SigNamespaceUri = "http://www.w3.org/2000/09/xmldsig#";
     loGen.SignedInfoCanonAlg = "C14N";
-    loGen.SignedInfoDigestMethod = "sha256";
+    loGen.SignedInfoDigestMethod = "sha256"; 
     //* -------- Reference 1 --------
     loGen.AddSameDocRef("","sha256","","","")
 //	* Provide a certificate + private key. (PFX password is test123)
 //	* For versions of Chilkat < 10.0.0, use CreateObject('Chilkat_9_5_0.Cert')
     const loCert = new chilkat.Cert;
     
-    const p_nombre_certi = "Certificado_Jofha.p12";
-    const p_Clave_Certificado = "jamv27JMFV";
+   const p_nombre_certi = "Certificado_Jofha.p12";
+   const p_Clave_Certificado = "jamv27JMFV";
+
+    //const p_nombre_certi = "certificado_dgii.p12";
+    //const p_Clave_Certificado = "Joselito77";
+
+    
     lnSuccess = loCert.LoadPfxFile(p_nombre_certi,p_Clave_Certificado);
+   
     
     if (lnSuccess !== true) {
         console.log('Error en Certificado Digital, Chequear Archivo de Firma y/o Clave Privada ');
@@ -243,12 +249,12 @@ app.post('/fe/recepcion/api/ecf',upload.single('xml') ,(req, res) => {
         return res.status(400).send('Error en Certificado Digital, Chequear Certificado, Clave Privada y/o Certificado Vencido');
         // return res.status(500).json({
         //res.send
-    }
+    }   
     /*
     if (lnSuccess != 1) {
         console.log('Error en Certificado Digital, Chequear Archivo de Firma y/o Clave Privada');
     }
-  */  
+  */ 
     loGen.SetX509Cert(loCert,1) 
     loGen.KeyInfoType = "X509Data+KeyValue"
     loGen.KeyInfoType = "X509Data"
@@ -299,14 +305,17 @@ app.post('/fe/recepcion/api/ecf',upload.single('xml') ,(req, res) => {
     const vroot = __dirname+'/enviados/'+v_RNCEmisor;
     console.log('vroot ',vroot);
     // res.status(200).sendFile(vnombre_archivo_grabado, { root: vroot }, function (err) {
+    /*
     res.status(200).sendFile(vnombre_archivo_grabado, function (err) {
     if (err) {
         res.status(400).send('Error al enviar el archivo: ');
           //console.log('Error al enviar el archivo:', err);
         }
     })
-    
-    //s.status(200).sendFile(vnombre_archivo_grabado)
+    */
+    res.status(200).sendFile(vnombre_archivo_grabado)
+
+
 //res.status(200).sendfile(vnombre_archivo);
 //res.send('Firmado Exitosamente '+loSbXml);
 //res.send('Firma Exitosa:');
