@@ -200,7 +200,7 @@ app.post('/fe/recepcion/api/ecf',upload.single('xml') ,(req, res) => {
     console.log('v_RNCEmisor ',v_RNCEmisor);
     const loXml = new chilkat.Xml();
     loXml.EmitCompact=1
-    loXml.Tag = "ARECF"
+    loXml.Tag = "ACECF"
     loXml.AddAttribute("xmlns:xsd","http://www.w3.org/2001/XMLSchema")
     loXml.AddAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance")
     loXml.UpdateChildContent("DetalleAcusedeRecibo|Version",process.env.VERSION);
@@ -216,12 +216,12 @@ app.post('/fe/recepcion/api/ecf',upload.single('xml') ,(req, res) => {
 
 // loXml.GetXmlSb(loSbXml)
 //codigo Firma archivo
-    let vnombre_archivo='ARECF' + v_RNCEmisor+v_eNCF+'.xml'
+    let vnombre_archivo=v_RNCComprador + v_eNCF+'.xml'
     let vnombre_archivo_completo='.enviados/'+vnombre_archivo
 
     const loGen = new chilkat.XmlDSigGen;
     loGen.Behaviors = "CompactSignedXml";
-    loGen.SigLocation = 'ARECF';
+    loGen.SigLocation = 'ACECF';
     loGen.SigLocationMod = 0;
     loGen.SigNamespacePrefix = "";
     loGen.SigNamespaceUri = "http://www.w3.org/2000/09/xmldsig#";
