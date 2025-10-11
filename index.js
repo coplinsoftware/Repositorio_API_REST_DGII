@@ -155,9 +155,9 @@ app.post('/fe/recepcion/api/ecf',upload.single('xml') ,(req, res) => {
     let v_Version=''
 
     const v_FechaHoraAcuseRecibo = dayjs().format('DD-MM-YYYY HH:mm:ss')
-//    console.log('v_FechaHoraAcuseRecibo_formateada',v_FechaHoraAcuseRecibo)
+    console.log('v_FechaHoraAcuseRecibo_formateada',v_FechaHoraAcuseRecibo)
     const v_FechaHoraAcuseRecibo_formateada = dayjs().format('DD-MM-YYYY HH:mm:ss')
-//    console.log('v_FechaHoraAcuseRecibo_formateada',v_FechaHoraAcuseRecibo_formateada)  
+    console.log('v_FechaHoraAcuseRecibo_formateada',v_FechaHoraAcuseRecibo_formateada)
         // const builder_xml = new xml2js.Builder({ rootName: 'ARECF', xmldec: { 'version': '1.0', 'encoding': 'UTF-8' } });
     //
     console.log('TodosLosTags: ',todosLosTags.length);
