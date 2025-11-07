@@ -6,7 +6,7 @@ import { dirname } from 'path';
 */
 var os = require('os');
 var  chilkat = require('@chilkat/ck-node23-linux-x64');
-//r chilkat = require('@chilkat/ck-node23-win64');
+//chilkat = require('@chilkat/ck-node23-win64');
 /*
 if (os.platform() == 'win32') {  
   var chilkat = require('@chilkat/ck-node23-win64'); 
@@ -32,6 +32,7 @@ const dotenv = require('dotenv/config')
 
 const fs = require('fs');
 const jwt = require('jsonwebtoken');
+//"jsonwebtoken": "^9.0.2"
 
 const path = require('path');
 
@@ -184,6 +185,7 @@ app.get('/', (req, res) => {
     res.send('Servidor Api Rest Coplin Software y Anabel está listo!');
 });
 app.use(morgan('dev'))
+
 app.post('/fe/autenticacion/api/validacioncertificado',upload.single('xml') ,(req, res) => {
     console.log(req.file);
     const xmlString = fs.readFileSync(req.file.path, 'UTF-8');
@@ -327,6 +329,7 @@ app.post('/fe/autenticacion/api/validacioncertificado',upload.single('xml') ,(re
     console.log('Error:', dsig.LastErrorText);
     }
 })
+
 app.get('/fe/autenticacion/api/semilla',(req, res) => {
     const characters = process.env.JWT_SECRET;
         const fecha_expedicion = Math.floor(Date.now() / 1000)
