@@ -6,7 +6,7 @@ import { dirname } from 'path';
 */
 var os = require('os');
 var  chilkat = require('@chilkat/ck-node23-linux-x64');
-// var chilkat = require('@chilkat/ck-node23-win64');
+//r chilkat = require('@chilkat/ck-node23-win64');
 /*
 if (os.platform() == 'win32') {  
   var chilkat = require('@chilkat/ck-node23-win64'); 
@@ -49,6 +49,43 @@ var glob = new chilkat.Global();
     if (success !== true) {
         console.log(glob.LastErrorText);
     }
+
+function validar_token(vtoken) {
+
+/*
+const payload = {
+        data: 'Token API Privada Contribuyentes DGII', // subject (user id)
+        role: 'Autenticacion TOKENS',
+        iat: fecha_expedicion, // issued at time (in seconds)
+        exp: fecha_expiracion
+        }
+*/
+    try {
+        // Verificar el token
+        
+        const decoded = jwt.verify(vtoken, process.env.JWT_SECRET);
+
+        console.log('Token válido. Datos decodificados:', decoded);
+
+        // Acceder a los datos del payload
+        console.log('ID de usuario:', decoded.userId);
+        console.log('Nombre:', decoded.name);
+        return 1
+
+    } catch (error) {
+        // Manejar errores de validación (token inválido, expirado, etc.)
+        if (error.name === 'TokenExpiredError') {
+            console.error('Error: El token ha expirado.');
+            return 0
+        } else if (error.name === 'JsonWebTokenError') {
+            console.error('Error: Token JWT inválido.', error.message);
+            return 0
+        } else {
+            console.error('Error desconocido al validar el token:', error);
+            return 0
+        }
+    }    
+}
 
 function v_firma(vnombre_archivo_firmar) {
     console.log('A Verificar ',vnombre_archivo_firmar);
@@ -167,7 +204,11 @@ app.post('/fe/autenticacion/api/validacioncertificado',upload.single('xml') ,(re
     console.log('Raiz ',loXml_puro.Tag);
     if (loXml_puro.Tag !== 'SemillaModel') {
     //    fs.unlinkSync(req.file.path);
-        return res.status(400).send('Tipo Documento Invalido');
+        const userData_3 = {
+            error: 400,
+            mensaje: 'Tipo Documento Invalido'
+        }
+        return res.status(400).send(JSON.stringify(userData_3)); // or simply res.json(userData) with Express
     }
     /*
     let vresultado=v_firma(req.file.path)
@@ -176,6 +217,16 @@ app.post('/fe/autenticacion/api/validacioncertificado',upload.single('xml') ,(re
         return res.status(400).send('Firma Digital Incorecta')
     }
     */
+    let v_valor = loXml_puro.GetChildContent("valor")
+    let vresul_validar_token=validar_token(v_valor)
+    if (vresul_validar_token!=1) {
+        const userData_2 = {
+            error: 400,
+            mensaje: 'Archivo Semilla No Valido'
+        }
+        return res.status(400).send(JSON.stringify(userData_2)); // or simply res.json(userData) with Express
+    }
+
 //  verificarFirmaDigital(vnombre_archivo_recibido);
     const dsig = new chilkat.XmlDSig();
     //const dsig = new chilkat.XmlDSigGen();    
@@ -219,8 +270,11 @@ app.post('/fe/autenticacion/api/validacioncertificado',upload.single('xml') ,(re
     }
     if (vresultado===1) {
         const fecha_expedicion = Math.floor(Date.now() / 1000)
-        const fecha_expiracion = Math.floor(Date.now() / 1000) + (60 * 10) // 1 hora
-
+        const fecha_expiracion = Math.floor(Date.now() / 1000) + (60 * 60) // 1 hora
+        let ahora = dayjs();
+        if (os.platform() == 'linux') {
+            ahora = ahora.subtract(4,'hour')
+        }
         const payload = {
         data: 'Token API Privada Contribuyentes DGII', // subject (user id)
         role: 'Autenticacion TOKENS',
@@ -231,10 +285,14 @@ app.post('/fe/autenticacion/api/validacioncertificado',upload.single('xml') ,(re
         const token = jwt.sign(payload, process.env.JWT_SECRET);
         const vfecha = dayjs().format();
 
+        //let ahoraMasUnaHora = ahora.del(1, 'hour');
+        let ahoraMasUnaHora = ahora.add(1, 'hour');
+        const vnew = ahoraMasUnaHora.format()
+
         const v_resul = {
         token: token, // subject (user id)
-        expira: fecha_expedicion,
-        expedido: fecha_expiracion // issued at time (in seconds)
+        expira: vnew,
+        expedido: ahora.format()
         }
         res.setHeader('Content-Type', 'application/json');
         return res.status(200).send(JSON.stringify(v_resul)); // or simply res.json(userData) with Express
@@ -272,7 +330,7 @@ app.post('/fe/autenticacion/api/validacioncertificado',upload.single('xml') ,(re
 app.get('/fe/autenticacion/api/semilla',(req, res) => {
     const characters = process.env.JWT_SECRET;
         const fecha_expedicion = Math.floor(Date.now() / 1000)
-        const fecha_expiracion = Math.floor(Date.now() / 1000) + (60 * 10) // 1 hora
+        const fecha_expiracion = Math.floor(Date.now() / 1000) + (60 * 2)
 
         const payload = {
         data: 'Token API Privada Contribuyentes DGII', // subject (user id)
@@ -281,7 +339,11 @@ app.get('/fe/autenticacion/api/semilla',(req, res) => {
         exp: fecha_expiracion
         }
         const token = jwt.sign(payload, process.env.JWT_SECRET);
-        const vfecha = dayjs().format();
+        let vfecha = dayjs();
+        if (os.platform() == 'linux') {
+            vfecha = vfecha.subtract(4,'hour')
+        }
+        vfecha = dayjs().format();
         const loXml_puro= new chilkat.Xml();
         const loXml_StringBuilder = new chilkat.StringBuilder();
 //
@@ -379,9 +441,8 @@ let v_RNCEmisor = loXml_puro.GetChildContent("Encabezado|Emisor|RNCEmisor")
 let lcMontoTotal = loXml_puro.GetChildContent("Encabezado|Totales|MontoTotal")
 
 let v_RNCComprador=loXml_puro.GetChildContent("Encabezado|Comprador|RNCComprador")
-if (v_RNCComprador!=='131660673' && v_RNCComprador!=='130935132' && v_RNCComprador!=='130808112' && v_RNCComprador!=='130808112' && v_RNCComprador!=='132101138' ) {
-//fs.unlinkSync(req.file.path);
-    return res.status(403).send('No Autorizado');
+if (v_RNCComprador!=='131660673' && v_RNCComprador!=='130935132' && v_RNCComprador!=='130808112'  && v_RNCComprador!=='130808112' && v_RNCComprador!=='132101138' && v_RNCComprador!=='130883653'     && v_RNCComprador!=='130808112' && v_RNCComprador!=='132101138' && v_RNCComprador!=='130883653' && v_RNCComprador!=='120000334') {
+        return res.status(403).send('No Autorizado');
 }
 
 let lcSignatureValue = loXml_puro.GetChildContent("Signature|SignatureValue")
